@@ -13,10 +13,10 @@
         android:theme="@style/Theme.Assignment1_RecyclerView_TodoList"
         tools:targetApi="31">
         <activity
-            android:name=".MainActivity"
+            android:name=".RecyclerView"
             android:exported="false" />
         <activity
-            android:name=".RecyclerView"
+            android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
