@@ -3,10 +3,12 @@ package com.nhatthach.assignment1_recyclerview_todolist.model;
 public class Task {
     private String title;
     private boolean isCompleted;
+    private long createdTime;
 
     public Task(String title) {
         this.title = title;
         this.isCompleted = false;
+        this.createdTime = System.currentTimeMillis();
     }
 
     public String getTitle() {
@@ -15,6 +17,10 @@ public class Task {
 
     public boolean isCompleted() {
         return isCompleted;
+    }
+
+    public long getCreatedTime() {
+        return createdTime;
     }
 
     public void toggleCompleted() {

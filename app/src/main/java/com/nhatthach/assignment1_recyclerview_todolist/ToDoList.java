@@ -22,6 +22,8 @@ import com.nhatthach.assignment1_recyclerview_todolist.TaskAdapter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class ToDoList extends AppCompatActivity {
@@ -74,7 +76,7 @@ public class ToDoList extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
 
-        // Add button action
+        // Hàm sắp xếp danh sách theo thời gian tạo (mới nhất lên đầu)
         buttonAdd.setOnClickListener(view -> {
             // Lấy nội dung task từ EditText
             String taskTitle = editTextTask.getText().toString().trim();
@@ -95,6 +97,8 @@ public class ToDoList extends AppCompatActivity {
                     default: // Nếu đang chọn All, hiển thị tất cả task
                         filteredList.addAll(taskList);
                 }
+                // Sắp xếp danh sách theo thời gian tạo
+                sortByCreatedTime(filteredList);
                 // Cập nhật lại giao diện danh sách
                 adapter.notifyDataSetChanged();
                 // Xóa nội dung EditText sau khi thêm
@@ -116,11 +120,23 @@ public class ToDoList extends AppCompatActivity {
                     default: // All
                         filteredList.addAll(taskList);
                 }
+                // Sắp xếp danh sách theo thời gian tạo
+                sortByCreatedTime(filteredList);
                 adapter.notifyDataSetChanged();
             }
             @Override
             public void onNothingSelected(AdapterView<?> parent) {}
         });
+    }
 
+    // Hàm sắp xếp danh sách theo thời gian tạo (mới nhất lên đầu)
+    private void sortByCreatedTime(ArrayList<Task> list) {
+        Collections.sort(list, new Comparator<Task>() {
+            @Override
+            public int compare(Task t1, Task t2) {
+                return Long.compare(t1.getCreatedTime(), t2.getCreatedTime()); // Descending: newest first
+            }
+        });
     }
 }
+
