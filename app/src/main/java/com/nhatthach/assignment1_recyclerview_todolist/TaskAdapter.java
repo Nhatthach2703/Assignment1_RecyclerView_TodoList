@@ -23,13 +23,14 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
 
     public static class TaskViewHolder extends RecyclerView.ViewHolder {
         TextView textTitle;
-        Button buttonComplete, buttonDelete;
+        Button buttonComplete, buttonDelete, buttonEdit;
 
         public TaskViewHolder(View itemView) {
             super(itemView);
             textTitle = itemView.findViewById(R.id.textTitle);
             buttonComplete = itemView.findViewById(R.id.buttonComplete);
             buttonDelete = itemView.findViewById(R.id.buttonDelete);
+            buttonEdit = itemView.findViewById(R.id.buttonEdit);
         }
     }
 
@@ -66,6 +67,24 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
             int currentPos = holder.getAdapterPosition();
             taskList.remove(currentPos);
             notifyItemRemoved(currentPos);
+        });
+
+        holder.buttonEdit.setOnClickListener(v -> {
+            Context context = holder.itemView.getContext();
+            EditText editText = new EditText(context);
+            editText.setText(task.getTitle());
+            new android.app.AlertDialog.Builder(context)
+                .setTitle("Edit Task")
+                .setView(editText)
+                .setPositiveButton("Save", (dialog, which) -> {
+                    String newTitle = editText.getText().toString().trim();
+                    if (!newTitle.isEmpty()) {
+                        task.setTitle(newTitle);
+                        notifyItemChanged(position);
+                    }
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
         });
     }
 
