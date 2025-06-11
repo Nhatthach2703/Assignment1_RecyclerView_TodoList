@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="8dp"
+    android:layout_marginTop="20dp"
     android:gravity="center_vertical">
 
     <TextView
@@ -16,21 +17,35 @@
 
     <Button
         android:id="@+id/buttonComplete"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="✔"/>
+        android:layout_width="50dp"
+        android:layout_height="40dp"
+        android:backgroundTint="#4CAF50"
+        android:drawableTop="@drawable/ic_check_24"
+        android:contentDescription="Hoàn thành"
+        android:text=""
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="4dp"/>
 
     <Button
         android:id="@+id/buttonDelete"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="✘"
-        android:layout_marginStart="8dp"/>
+        android:layout_width="50dp"
+        android:layout_height="40dp"
+        android:backgroundTint="#F44336"
+        android:drawableTop="@drawable/ic_delete_24"
+        android:contentDescription="Xóa"
+        android:text=""
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="4dp"/>
 
     <Button
         android:id="@+id/buttonEdit"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="✎"
-        android:layout_marginStart="8dp"/>
+        android:layout_width="50dp"
+        android:layout_height="40dp"
+        android:backgroundTint="#2196F3"
+        android:drawableTop="@drawable/ic_edit_24"
+        android:contentDescription="Sửa"
+        android:text=""
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="4dp"/>
 </LinearLayout>
+

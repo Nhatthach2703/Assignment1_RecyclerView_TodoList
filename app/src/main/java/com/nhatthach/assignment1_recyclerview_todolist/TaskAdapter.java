@@ -1,6 +1,8 @@
 package com.nhatthach.assignment1_recyclerview_todolist;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -50,14 +52,17 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         if (task.isCompleted()) {
             holder.textTitle.setPaintFlags(holder.textTitle.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
             holder.buttonComplete.setEnabled(false);
+            holder.buttonComplete.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#BDBDBD")));
         } else {
             holder.textTitle.setPaintFlags(holder.textTitle.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
             holder.buttonComplete.setEnabled(true);
+            holder.buttonComplete.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#4CAF50")));
         }
 
         holder.buttonComplete.setOnClickListener(v -> {
             task.setCompleted(true);
-            holder.textTitle.setPaintFlags(holder.textTitle.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+            // Đổi màu nút thành xám sau khi hoàn thành
+            holder.buttonComplete.setBackgroundTintList(android.content.res.ColorStateList.valueOf(android.graphics.Color.parseColor("#BDBDBD")));
             holder.buttonComplete.setEnabled(false);
 
             Toast.makeText(v.getContext(), "Đã hoàn thành: " + task.getTitle(), Toast.LENGTH_SHORT).show();
