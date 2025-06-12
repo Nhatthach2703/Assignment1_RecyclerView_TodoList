@@ -54,7 +54,7 @@ public class ToDoList extends AppCompatActivity {
         editTextSearch = findViewById(R.id.editTextSearch);
         editTextDeadline = findViewById(R.id.editTextDeadline);
         buttonAdd = findViewById(R.id.buttonAdd);
-        recyclerView = (RecyclerView) findViewById(R.id.recyclerViewTasks); // ép kiểu tại đây
+        recyclerView = (RecyclerView) findViewById(R.id.recyclerViewTasks);
         spinnerFilter = findViewById(R.id.spinnerFilter);
 
         taskList = new ArrayList<>();
@@ -90,7 +90,7 @@ public class ToDoList extends AppCompatActivity {
             if (!taskTitle.isEmpty()) {
                 Task newTask = deadline.isEmpty() ? new Task(taskTitle) : new Task(taskTitle, deadline);
                 taskList.add(newTask);
-                // Sau khi thêm task mới, gọi filterTasks để cập nhật filteredList và adapter
+
                 filterTasks();
                 editTextTask.setText("");
                 editTextDeadline.setText("");
