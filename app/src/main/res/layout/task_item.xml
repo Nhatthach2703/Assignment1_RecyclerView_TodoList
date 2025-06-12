@@ -3,17 +3,33 @@
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="8dp"
+    android:padding="10dp"
     android:layout_marginTop="20dp"
-    android:gravity="center_vertical">
+    android:gravity="center_vertical"
+    android:background="@drawable/border_task">
 
-    <TextView
-        android:id="@+id/textTitle"
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:textSize="20sp"
-        android:text="Sample Task"/>
+        android:layout_weight="1">
+        <TextView
+            android:id="@+id/textTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:textStyle="italic"
+            android:text="Sample Task"/>
+
+        <TextView
+            android:id="@+id/textDeadline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:text="xx-yy-zzzz"
+            android:textColor="@color/orange"
+            android:textSize="15sp" />
+    </LinearLayout>
 
     <Button
         android:id="@+id/buttonComplete"
@@ -48,4 +64,3 @@
         android:layout_marginStart="4dp"
         android:layout_marginEnd="4dp"/>
 </LinearLayout>
-

@@ -5,4 +5,9 @@
     <color name="green">#4CAF50</color>
     <color name="red">#F44336</color>
     <color name="blue">#2196F3</color>
+    <color name="light_blue">#BBDEFB</color>
+    <color name="dark_blue">#0D47A1</color>
+    <color name="light_gray">#B0BEC5</color>
+    <color name="dark_gray">#9E9E9E</color>
+    <color name="orange">#FF9800</color>
 </resources>

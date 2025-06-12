@@ -28,7 +28,7 @@ import java.util.List;
 
 public class ToDoList extends AppCompatActivity {
 
-    private EditText editTextTask;
+    private EditText editTextTask, editTextSearch, editTextDeadline;
     private Button buttonAdd;
     private RecyclerView recyclerView;
     private TaskAdapter adapter;
@@ -39,7 +39,7 @@ public class ToDoList extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
+//        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_to_do_list);
 
         // Set padding for system UI (status bar, navigation bar)
@@ -49,94 +49,98 @@ public class ToDoList extends AppCompatActivity {
             return insets;
         });
 
-        // Bind views
+
         editTextTask = findViewById(R.id.editTextTask);
+        editTextSearch = findViewById(R.id.editTextSearch);
+        editTextDeadline = findViewById(R.id.editTextDeadline);
         buttonAdd = findViewById(R.id.buttonAdd);
         recyclerView = (RecyclerView) findViewById(R.id.recyclerViewTasks); // ép kiểu tại đây
         spinnerFilter = findViewById(R.id.spinnerFilter);
 
-        // Initialize list and adapter
         taskList = new ArrayList<>();
-        adapter = new TaskAdapter(taskList);
-        taskList.add(new Task("Buy groceries"));
-        taskList.add(new Task("Do homework"));
+        filteredList = new ArrayList<>();
+        taskList.add(new Task("Buy groceries", "2025-06-15"));
+        taskList.add(new Task("Do homework", "2025-06-20"));
         taskList.add(new Task("Read a book"));
+        filteredList.addAll(taskList);
+
+        adapter = new TaskAdapter(filteredList, taskList);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
 
         // Setup filter options
-        filteredList = new ArrayList<>();
         ArrayAdapter<String> filterAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, new String[]{"All", "Completed", "Incomplete"});
         filterAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerFilter.setAdapter(filterAdapter);
 
-        // Default: show all
-        filteredList.addAll(taskList);
-        adapter = new TaskAdapter(filteredList);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(adapter);
-
-        // Hàm sắp xếp danh sách theo thời gian tạo (mới nhất lên đầu)
-        buttonAdd.setOnClickListener(view -> {
-            // Lấy nội dung task từ EditText
-            String taskTitle = editTextTask.getText().toString().trim();
-            if (!taskTitle.isEmpty()) {
-                // Tạo task mới và thêm vào danh sách gốc
-                Task newTask = new Task(taskTitle);
-                taskList.add(newTask);
-                // Lọc lại filteredList theo filter hiện tại trên Spinner
-                int filterPos = spinnerFilter.getSelectedItemPosition();
-                filteredList.clear();
-                switch (filterPos) {
-                    case 1: // Nếu đang chọn Completed, chỉ hiển thị task đã hoàn thành
-                        for (Task t : taskList) if (t.isCompleted()) filteredList.add(t);
-                        break;
-                    case 2: // Nếu đang chọn Incomplete, chỉ hiển thị task chưa hoàn thành
-                        for (Task t : taskList) if (!t.isCompleted()) filteredList.add(t);
-                        break;
-                    default: // Nếu đang chọn All, hiển thị tất cả task
-                        filteredList.addAll(taskList);
-                }
-                // Sắp xếp danh sách theo thời gian tạo
-                sortByCreatedTime(filteredList);
-                // Cập nhật lại giao diện danh sách
-                adapter.notifyDataSetChanged();
-                // Xóa nội dung EditText sau khi thêm
-                editTextTask.setText("");
+        editTextSearch.addTextChangedListener(new android.text.TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                filterTasks();
             }
+            @Override
+            public void afterTextChanged(android.text.Editable s) {}
+        });
+
+        buttonAdd.setOnClickListener(view -> {
+            String taskTitle = editTextTask.getText().toString().trim();
+            String deadline = editTextDeadline.getText().toString().trim();
+            if (!taskTitle.isEmpty()) {
+                Task newTask = deadline.isEmpty() ? new Task(taskTitle) : new Task(taskTitle, deadline);
+                taskList.add(newTask);
+                // Sau khi thêm task mới, gọi filterTasks để cập nhật filteredList và adapter
+                filterTasks();
+                editTextTask.setText("");
+                editTextDeadline.setText("");
+            }
+        });
+
+        // Xử lý chọn deadline bằng DatePickerDialog khi bấm vào ô deadline
+        editTextDeadline.setOnClickListener(v -> {
+            java.util.Calendar calendar = java.util.Calendar.getInstance();
+            new android.app.DatePickerDialog(this, (view, year, month, dayOfMonth) -> {
+                String dateStr = String.format("%04d-%02d-%02d", year, month + 1, dayOfMonth);
+                editTextDeadline.setText(dateStr);
+            },
+            calendar.get(java.util.Calendar.YEAR),
+            calendar.get(java.util.Calendar.MONTH),
+            calendar.get(java.util.Calendar.DAY_OF_MONTH)
+            ).show();
         });
 
         spinnerFilter.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                filteredList.clear();
-                switch (position) {
-                    case 1: // Completed
-                        for (Task t : taskList) if (t.isCompleted()) filteredList.add(t);
-                        break;
-                    case 2: // Incomplete
-                        for (Task t : taskList) if (!t.isCompleted()) filteredList.add(t);
-                        break;
-                    default: // All
-                        filteredList.addAll(taskList);
-                }
-                // Sắp xếp danh sách theo thời gian tạo
-                sortByCreatedTime(filteredList);
-                adapter.notifyDataSetChanged();
+                filterTasks();
             }
             @Override
             public void onNothingSelected(AdapterView<?> parent) {}
         });
     }
 
-    // Hàm sắp xếp danh sách theo thời gian tạo (mới nhất lên đầu)
     private void sortByCreatedTime(ArrayList<Task> list) {
         Collections.sort(list, new Comparator<Task>() {
             @Override
             public int compare(Task t1, Task t2) {
-                return Long.compare(t1.getCreatedTime(), t2.getCreatedTime()); // Descending: newest first
+                return Long.compare(t2.getCreatedTime(), t1.getCreatedTime());
             }
         });
     }
-}
 
+    private void filterTasks() {
+        String keyword = editTextSearch.getText().toString().toLowerCase().trim();
+        int filterPos = spinnerFilter.getSelectedItemPosition();
+        filteredList.clear();
+        for (Task t : taskList) {
+            boolean matchStatus = (filterPos == 0) || (filterPos == 1 && t.isCompleted()) || (filterPos == 2 && !t.isCompleted());
+            boolean matchKeyword = t.getTitle().toLowerCase().contains(keyword);
+            if (matchStatus && matchKeyword) {
+                filteredList.add(t);
+            }
+        }
+        sortByCreatedTime(filteredList);
+        adapter.notifyDataSetChanged(); // Cập nhật adapter sau khi lọc
+    }
+}
